@@ -17,6 +17,6 @@ func GetDefaultConfig() Config {
 	return Config{
 		RepoOwner:             "makerdao",
 		RepoName:              "testchain-dss-deployment-scripts",
-		DefaultCheckoutTarget: "tags/qa-deploy",
+		DefaultCheckoutTarget: "tags/staxx-deploy",
 	}
 }
