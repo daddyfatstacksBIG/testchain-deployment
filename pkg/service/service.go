@@ -77,22 +77,37 @@ func Run(log *logrus.Entry, cfg *config.Config) error {
 func natsServConfigure(log *logrus.Entry, cfg nats.Config, methodsComponent *methods.Methods) (*nats.Server, error) {
 	n := nats.New(log, &cfg)
 
+	// TODO: remove
 	if err := n.AddSyncMethod("GetInfo", methodsComponent.GetInfo); err != nil {
 		return nil, err
 	}
+	// TODO: remove
 	if err := n.AddSyncMethod("GetResult", methodsComponent.GetResult); err != nil {
 		return nil, err
 	}
+	// TODO: remove
 	if err := n.AddSyncMethod("GetCommitList", methodsComponent.GetCommitList); err != nil {
 		return nil, err
 	}
+	// TODO: remove
 	if err := n.AddAsyncMethod("Run", methodsComponent.Run); err != nil {
 		return nil, err
 	}
+	// TODO: remove
 	if err := n.AddAsyncMethod("UpdateSource", methodsComponent.Update); err != nil {
 		return nil, err
 	}
+	// TODO: remove
 	if err := n.AddAsyncMethod("Checkout", methodsComponent.Checkout); err != nil {
+		return nil, err
+	}
+	if err := n.AddSyncMethod("GetRefs", methodsComponent.GetRefs); err != nil {
+		return nil, err
+	}
+	if err := n.AddSyncMethod("GetManifest", methodsComponent.GetManifest); err != nil {
+		return nil, err
+	}
+	if err := n.AddAsyncMethod("Deploy", methodsComponent.Deploy); err != nil {
 		return nil, err
 	}
 	return n, nil
@@ -102,26 +117,41 @@ func httpServConfigure(
 	log *logrus.Entry,
 	port int,
 	methodsComponent *methods.Methods,
-	storage HTTPServerStorage,
+	storage storage.Storage,
 ) (*HTTPServer, error) {
 	// register methods in handler
 	handler := shttp.NewHandler(log)
+	// TODO: remove
 	if err := handler.AddMethod("GetInfo", methodsComponent.GetInfo); err != nil {
 		return nil, err
 	}
+	// TODO: remove
 	if err := handler.AddMethod("Run", methodsComponent.Run); err != nil {
 		return nil, err
 	}
+	// TODO: remove
 	if err := handler.AddMethod("UpdateSource", methodsComponent.Update); err != nil {
 		return nil, err
 	}
+	// TODO: remove
 	if err := handler.AddMethod("GetResult", methodsComponent.GetResult); err != nil {
 		return nil, err
 	}
+	// TODO: remove
 	if err := handler.AddMethod("GetCommitList", methodsComponent.GetCommitList); err != nil {
 		return nil, err
 	}
+	// TODO: remove
 	if err := handler.AddMethod("Checkout", methodsComponent.Checkout); err != nil {
+		return nil, err
+	}
+	if err := handler.AddMethod("GetRefs", methodsComponent.GetRefs); err != nil {
+		return nil, err
+	}
+	if err := handler.AddMethod("GetManifest", methodsComponent.GetManifest); err != nil {
+		return nil, err
+	}
+	if err := handler.AddMethod("Deploy", methodsComponent.Deploy); err != nil {
 		return nil, err
 	}
 	// init and run http server
@@ -137,13 +167,8 @@ func httpServConfigure(
 	}, nil
 }
 
-type HTTPServerStorage interface {
-	GetUpdate() bool
-	GetRun() bool
-}
-
 type HTTPServer struct {
-	Storage HTTPServerStorage
+	Storage storage.Storage
 	http.Server
 }
 
